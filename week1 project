@@ -1,0 +1,44 @@
+import numpy as np
+import csv
+
+# Simulate 365 days of sales (e.g., Rs. in thousands)
+np.random.seed(42)
+daily_sales = np.random.normal(loc=50, scale=10, size=365)  # mean=50k, std=10k
+daily_sales = np.round(daily_sales, 2)
+
+# Clip negative values to 0
+daily_sales = np.clip(daily_sales, 0, None)
+print("Sample sales:", daily_sales[:10])
+
+# Calculations
+average_sales = np.mean(daily_sales)
+total_sales = np.sum(daily_sales)
+highest_day = np.argmax(daily_sales)
+lowest_day = np.argmin(daily_sales)
+
+print(f"Average Daily Sales: ₹{average_sales:.2f}k")
+print(f"Total Annual Sales: ₹{total_sales:.2f}k")
+print(f"Highest Sales Day: Day {highest_day+1} (₹{daily_sales[highest_day]}k)")
+print(f"Lowest Sales Day: Day {lowest_day+1} (₹{daily_sales[lowest_day]}k)")
+
+# Moving average of last 30 days for forecast
+window = 30
+recent_data = daily_sales[-window:]
+forecast_next_30 = np.full(30, np.mean(recent_data))
+
+print("Forecast for next 5 days:", forecast_next_30[:5])
+
+# Monthly calculations
+months = np.array_split(daily_sales, 12)
+monthly_sales = [np.sum(month) for month in months]
+monthly_average = [np.mean(month) for month in months]
+
+print("Monthly Total Sales:", monthly_sales)
+print("Monthly Average Sales:", monthly_average)
+
+# Save to CSV
+with open("sample_output.csv", "w", newline="", encoding="utf-8") as file:
+    writer = csv.writer(file)
+    writer.writerow(["Day", "Sales (₹k)"])
+    for i, sale in enumerate(daily_sales, 1):
+        writer.writerow([i, sale])
