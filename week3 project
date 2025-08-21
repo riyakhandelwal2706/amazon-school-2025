@@ -1,0 +1,29 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Load dataset (CSV format: Name, Roll, Classes_Attended, Total_Classes)
+data = pd.read_csv("attendance.csv")
+
+# Calculate Attendance Percentage
+data["Attendance %"] = (data["Classes_Attended"] / data["Total_Classes"]) * 100
+
+# Find Defaulters (<75%)
+defaulters = data[data["Attendance %"] < 75]
+
+# Display Data
+print("Complete Attendance Report:\n", data)
+print("\nDefaulters (<75% Attendance):\n", defaulters)
+
+# Save Defaulters Report
+defaulters.to_csv("defaulters_report.csv", index=False)
+
+# Visualization
+plt.figure(figsize=(10, 6))
+plt.bar(data["Name"], data["Attendance %"], color="skyblue")
+plt.axhline(75, color="red", linestyle="--", label="75% Threshold")
+plt.xticks(rotation=45)
+plt.xlabel("Students")
+plt.ylabel("Attendance Percentage")
+plt.title("Student Attendance Analysis")
+plt.legend()
+plt.show()
